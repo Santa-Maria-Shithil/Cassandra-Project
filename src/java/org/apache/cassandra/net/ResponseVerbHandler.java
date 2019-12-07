@@ -71,6 +71,7 @@ class ResponseVerbHandler implements IVerbHandler
     @Override
     public void doVerb(Message message)
     {
+    	logger.info("inside do verb");
     	long start = System.nanoTime();
         RequestCallbacks.CallbackInfo callbackInfo = MessagingService.instance().callbacks.remove(message.id(), message.from());
       AtomicInteger counter = predictor.getPendingRequestCounter(FBUtilities.getBroadcastAddressAndPort());

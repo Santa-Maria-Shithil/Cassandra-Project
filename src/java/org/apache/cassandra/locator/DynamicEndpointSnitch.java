@@ -311,7 +311,7 @@ public class DynamicEndpointSnitch extends AbstractEndpointSnitch implements Lat
             newScores.put(entry.getKey(), score);
         }
         scores = newScores;
-        logger.info("inside dmax score");
+       // logger.info("inside dmax score");
     }
 
     private void reset()
