@@ -297,9 +297,13 @@ public class DynamicEndpointSnitch extends AbstractEndpointSnitch implements Lat
         {
             double mean = entry.getValue().getMedian();
             if (mean > maxLatency)
+            {
+                logger.info(entry.getKey().toString()+"maxlatency:"+Double.toString(maxLatency));
                 maxLatency = mean;
-            logger.info("maxlatency:"+Double.toString(maxLatency));
+            }
+    
         }
+
         // now make another pass to do the weighting based on the maximums we found before
         for (Map.Entry<InetAddressAndPort, Snapshot> entry : snapshots.entrySet())
         {
