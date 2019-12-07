@@ -37,9 +37,12 @@ import org.apache.cassandra.gms.Gossiper;
 import org.apache.cassandra.gms.VersionedValue;
 import org.apache.cassandra.net.LatencySubscribers;
 import org.apache.cassandra.net.MessagingService;
+import org.apache.cassandra.net.ResponseVerbHandler;
 import org.apache.cassandra.service.StorageService;
 import org.apache.cassandra.utils.FBUtilities;
 import org.apache.cassandra.utils.MBeanWrapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A dynamic snitch that sorts endpoints by latency with an adapted phi failure detector
@@ -47,7 +50,7 @@ import org.apache.cassandra.utils.MBeanWrapper;
 public class DynamicEndpointSnitch extends AbstractEndpointSnitch implements LatencySubscribers.Subscriber, DynamicEndpointSnitchMBean
 {
     private static final boolean USE_SEVERITY = !Boolean.getBoolean("cassandra.ignore_dynamic_snitch_severity");
-
+    private static final Logger logger = LoggerFactory.getLogger(DynamicEndpointSnitch.class);
     private static final double ALPHA = 0.75; // set to 0.75 to make EDS more biased to towards the newer values
     private static final int WINDOW_SIZE = 100;
 
@@ -309,6 +312,7 @@ public class DynamicEndpointSnitch extends AbstractEndpointSnitch implements Lat
             newScores.put(entry.getKey(), score);
         }
         scores = newScores;
+        logger.info("inside dmax score");
     }
 
     private void reset()
