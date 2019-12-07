@@ -628,8 +628,9 @@ public class CassandraDaemon
 
             if (System.getProperty("cassandra-foreground") == null)
             {
-                System.out.close();
-                System.err.close();
+              //  System.out.close();
+                //System.err.close();
+            	;
             }
 
             start();
