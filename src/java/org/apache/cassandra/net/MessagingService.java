@@ -283,6 +283,7 @@ public final class MessagingService extends MessagingServiceMBeanImpl
         		predictor.put(to, new AtomicInteger(0));
         	}
         	predictor.get(to).incrementAndGet();
+           	logger.info("incrementing job inside messagingservice");
         }
         callbacks.addWithExpiration(cb, message, to);
         updateBackPressureOnSend(to, cb, message);
@@ -349,8 +350,11 @@ public final class MessagingService extends MessagingServiceMBeanImpl
             catch (ClosedChannelException e)
             {
                 if (isShuttingDown)
+                {
+                	predictor.get(to).decrementAndGet();
+                	logger.info("decrementing pending job inside messagingservice");
                     return; // just drop the message, and let others clean up
-
+                }
                 // remove the connection and try again
                 channelManagers.remove(to, connections);
             }
