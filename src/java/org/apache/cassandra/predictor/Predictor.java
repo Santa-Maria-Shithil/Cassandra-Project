@@ -51,7 +51,7 @@ public class Predictor {
 		servicetime.put(key, stime);
 		//int qsize=get(key).decrementAndGet();
 	   	logger.info("decrementing pending job inside predictor");
-		String data = key.toString() + " " + Integer.toString(qsize) + " " +l + " " + stime;
+		String data = key.toString() + " " + Integer.toString(qsize) + " " +l + " " + stime+"\n";
 		File file =new File("data.txt");
 		FileWriter fr = null;
 		try
