@@ -101,12 +101,15 @@ class ResponseVerbHandler implements IVerbHandler
         	logger.info("Successed inside response verb handler");
             MessagingService.instance().latencySubscribers.maybeAdd(cb, message.from(), latencyNanos, NANOSECONDS);
             cb.onResponse(message);
+            if(message.verb().equals(Verb.READ_REQ))
+            		{
             long serviceTimeNanos = System.nanoTime()-start;
             int queueSize = counter.decrementAndGet();
         	logger.info("decrementing pending job inside doverb()");
            // int queueSize = counter.get();
             //System.out.println("hi please run man. I am crying. :'( ");
 			predictor.updateMetrices(FBUtilities.getBroadcastAddressAndPort(),queueSize, latencyNanos, serviceTimeNanos);
+            		}
         }
 
         if (callbackInfo.callback.supportsBackPressure())
