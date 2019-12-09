@@ -56,7 +56,7 @@ public class Predictor {
 		FileWriter fr = null;
 		try
 		{
-			fr = new FileWriter(file,true);
+			fr = new FileWriter(file);
 			fr.write(data);
 		}catch (IOException e)
 		{
