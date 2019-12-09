@@ -102,18 +102,9 @@ class ResponseVerbHandler implements IVerbHandler
             MessagingService.instance().latencySubscribers.maybeAdd(cb, message.from(), latencyNanos, NANOSECONDS);
             cb.onResponse(message);
             
-            
-            
-            if(message.verb().equals(Verb.READ_REQ))
-            {
-            long serviceTimeNanos = System.nanoTime()-start;
-            int queueSize = counter.decrementAndGet();
-        	logger.info("decrementing pending job inside doverb()");
-           // int queueSize = counter.get();
-            //System.out.println("hi please run man. I am crying. :'( ");
-			predictor.updateMetrices(FBUtilities.getBroadcastAddressAndPort(),queueSize, latencyNanos, serviceTimeNanos, "read_req");
-            }
-            else if(message.verb().equals(Verb.READ_RSP))
+                   
+         
+            if(message.verb().equals(Verb.READ_RSP))
     		{
 		    long serviceTimeNanos = System.nanoTime()-start;
 		    int queueSize = counter.decrementAndGet();
@@ -122,19 +113,7 @@ class ResponseVerbHandler implements IVerbHandler
 		    //System.out.println("hi please run man. I am crying. :'( ");
 			predictor.updateMetrices(FBUtilities.getBroadcastAddressAndPort(),queueSize, latencyNanos, serviceTimeNanos, "read_rsp");
     		}
-	        else
-	        {
-	        	 long serviceTimeNanos = System.nanoTime()-start;
-	        	    int queueSize = counter.decrementAndGet();
-	        		logger.info("decrementing pending job inside doverb()");
-	        	   // int queueSize = counter.get();
-	        	    //System.out.println("hi please run man. I am crying. :'( ");
-	        		predictor.updateMetrices(FBUtilities.getBroadcastAddressAndPort(),queueSize, latencyNanos, serviceTimeNanos, message.verb().toString());
-	        }
-
-            
-            
-            
+	                      
         if (callbackInfo.callback.supportsBackPressure())
         {
             MessagingService.instance().updateBackPressureOnReceive(message.from(), cb, false);
