@@ -44,14 +44,14 @@ public class Predictor {
 		}
 		return counter;
 	}
-	public void updateMetrices(InetAddressAndPort key,int qsize, long l, long stime)
+	public void updateMetrices(InetAddressAndPort key,int qsize, long l, long stime, String tag)
 	{
 		
 		latency.put(key, l);
 		servicetime.put(key, stime);
 		//int qsize=get(key).decrementAndGet();
 	   	logger.info("decrementing pending job inside predictor");
-		String data = key.toString() + " " + Integer.toString(qsize) + " " +l + " " + stime+"\n";
+		String data = key.toString() + " " + Integer.toString(qsize) + " " +l + " " + stime+" "+tag+"\n";
 		File file =new File("data.txt");
 		FileWriter fr = null;
 		try
