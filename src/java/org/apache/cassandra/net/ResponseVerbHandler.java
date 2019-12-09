@@ -74,7 +74,7 @@ class ResponseVerbHandler implements IVerbHandler
     	logger.info("inside do verb");
     	long start = System.nanoTime();
         RequestCallbacks.CallbackInfo callbackInfo = MessagingService.instance().callbacks.remove(message.id(), message.from());
-     // AtomicInteger counter = predictor.getPendingRequestCounter(FBUtilities.getBroadcastAddressAndPort());
+      AtomicInteger counter = predictor.getPendingRequestCounter(FBUtilities.getBroadcastAddressAndPort());
      
        
       
@@ -102,10 +102,11 @@ class ResponseVerbHandler implements IVerbHandler
             MessagingService.instance().latencySubscribers.maybeAdd(cb, message.from(), latencyNanos, NANOSECONDS);
             cb.onResponse(message);
             long serviceTimeNanos = System.nanoTime()-start;
-          //  int queueSize = counter.decrementAndGet();
+            int queueSize = counter.decrementAndGet();
+        	logger.info("decrementing pending job inside doverb()");
            // int queueSize = counter.get();
             //System.out.println("hi please run man. I am crying. :'( ");
-			predictor.updateMetrices(FBUtilities.getBroadcastAddressAndPort(),latencyNanos, serviceTimeNanos);
+			predictor.updateMetrices(FBUtilities.getBroadcastAddressAndPort(),queueSize, latencyNanos, serviceTimeNanos);
         }
 
         if (callbackInfo.callback.supportsBackPressure())
