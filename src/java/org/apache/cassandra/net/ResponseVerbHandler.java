@@ -113,6 +113,8 @@ class ResponseVerbHandler implements IVerbHandler
 		    //System.out.println("hi please run man. I am crying. :'( ");
 			predictor.updateMetrices(FBUtilities.getBroadcastAddressAndPort(),queueSize, latencyNanos, serviceTimeNanos, "read_rsp");
     		}
+            long serviceTimeNanos = System.nanoTime()-start;
+            predictor.updateMetrices2(FBUtilities.getBroadcastAddressAndPort(), latencyNanos, serviceTimeNanos,message.verb().toString());
 	                      
         if (callbackInfo.callback.supportsBackPressure())
         {

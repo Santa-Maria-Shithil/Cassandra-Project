@@ -71,4 +71,32 @@ public class Predictor {
 			}
 		}
 	} 
+	
+	public void updateMetrices2(InetAddressAndPort key, long l, long stime, String tag)
+	{
+		
+		latency.put(key, l);
+		servicetime.put(key, stime);
+		//int qsize=get(key).decrementAndGet();
+	   	logger.info("decrementing pending job inside predictor");
+		String data = key.toString() + " "+l + " " + stime+" "+tag+"\n";
+		File file =new File("datatwo.txt");
+		FileWriter fr = null;
+		try
+		{
+			fr = new FileWriter(file,true);
+			fr.write(data);
+		}catch (IOException e)
+		{
+			e.printStackTrace();
+		}finally {
+			try
+			{
+				fr.close();
+			}catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+	} 
 }
