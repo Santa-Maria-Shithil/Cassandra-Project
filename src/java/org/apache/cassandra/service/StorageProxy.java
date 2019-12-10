@@ -69,6 +69,7 @@ import org.apache.cassandra.service.paxos.PaxosState;
 import org.apache.cassandra.service.paxos.PrepareCallback;
 import org.apache.cassandra.service.paxos.ProposeCallback;
 import org.apache.cassandra.net.Verb;
+import org.apache.cassandra.predictor.Predictor;
 import org.apache.cassandra.tracing.Tracing;
 import org.apache.cassandra.triggers.TriggerExecutor;
 import org.apache.cassandra.utils.*;
@@ -88,8 +89,10 @@ import static org.apache.cassandra.service.paxos.PrepareVerbHandler.doPrepare;
 import static org.apache.cassandra.service.paxos.ProposeVerbHandler.doPropose;
 
 public class StorageProxy implements StorageProxyMBean
+
 {
-    public static final String MBEAN_NAME = "org.apache.cassandra.db:type=StorageProxy";
+
+	public static final String MBEAN_NAME = "org.apache.cassandra.db:type=StorageProxy";
     private static final Logger logger = LoggerFactory.getLogger(StorageProxy.class);
 
     public static final String UNREACHABLE = "UNREACHABLE";
@@ -1755,12 +1758,19 @@ public class StorageProxy implements StorageProxyMBean
     {
         private final ReadCommand command;
         private final ReadCallback handler;
+        //cassandraproject
+        //private Predictor predictor =new Predictor();
+        private final long start =System.nanoTime();
+        //endcassandraproject
 
         public LocalReadRunnable(ReadCommand command, ReadCallback handler)
         {
             super(Verb.READ_REQ);
             this.command = command;
             this.handler = handler;
+            //cassandraprojcet
+            Predictor.getPendingRequestCounter(FBUtilities.getBroadcastAddressAndPort()).incrementAndGet();
+            //endcassandraproject
         }
 
         protected void runMayThrow()
@@ -1785,8 +1795,13 @@ public class StorageProxy implements StorageProxyMBean
                     MessagingService.instance().metrics.recordSelfDroppedMessage(verb, MonotonicClock.approxTime.now() - approxCreationTimeNanos, NANOSECONDS);
                     handler.onFailure(FBUtilities.getBroadcastAddressAndPort(), RequestFailureReason.UNKNOWN);
                 }
-
                 MessagingService.instance().latencySubscribers.add(FBUtilities.getBroadcastAddressAndPort(), MonotonicClock.approxTime.now() - approxCreationTimeNanos, NANOSECONDS);
+                //cassandraproject
+                long serviceTimeInNanos=System.nanoTime()-start;
+                int qsz=Predictor.getPendingRequestCounter(FBUtilities.getBroadcastAddressAndPort()).decrementAndGet();
+               
+                Predictor.updateMetrices(FBUtilities.getBroadcastAddressAndPort(), qsz, MonotonicClock.approxTime.now() - approxCreationTimeNanos, serviceTimeInNanos,"from storage proxy");
+                //endcassandraproject
             }
             catch (Throwable t)
             {

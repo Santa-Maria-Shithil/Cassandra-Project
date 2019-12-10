@@ -71,10 +71,10 @@ class ResponseVerbHandler implements IVerbHandler
     @Override
     public void doVerb(Message message)
     {
-    	logger.info("inside do verb");
+    //	logger.info("inside do verb");
     	long start = System.nanoTime();
         RequestCallbacks.CallbackInfo callbackInfo = MessagingService.instance().callbacks.remove(message.id(), message.from());
-      AtomicInteger counter = predictor.getPendingRequestCounter(FBUtilities.getBroadcastAddressAndPort());
+     // AtomicInteger counter = predictor.getPendingRequestCounter(FBUtilities.getBroadcastAddressAndPort());
      
        
       
@@ -98,23 +98,25 @@ class ResponseVerbHandler implements IVerbHandler
         else
         {
         	
-        	logger.info("Successed inside response verb handler");
+        	//logger.info("Successed inside response verb handler");
             MessagingService.instance().latencySubscribers.maybeAdd(cb, message.from(), latencyNanos, NANOSECONDS);
             cb.onResponse(message);
             
                    
-         
+         //
             if(message.verb().equals(Verb.READ_RSP))
     		{
-		    long serviceTimeNanos = System.nanoTime()-start;
-		    int queueSize = counter.decrementAndGet();
-			logger.info("decrementing pending job inside doverb()");
+		   long serviceTimeNanos = System.nanoTime()-start;
+		 //   int queueSize = counter.decrementAndGet();
+		//	logger.info("decrementing pending job inside doverb()");
 		   // int queueSize = counter.get();
+		   Predictor.updateMetricesRemote(FBUtilities.getBroadcastAddressAndPort(), latencyNanos, message.verb().toString());
 		    //System.out.println("hi please run man. I am crying. :'( ");
-			predictor.updateMetrices(FBUtilities.getBroadcastAddressAndPort(),queueSize, latencyNanos, serviceTimeNanos, "read_rsp");
+		//	predictor.updateMetrices(FBUtilities.getBroadcastAddressAndPort(),queueSize, latencyNanos, serviceTimeNanos, "read_rsp");
     		}
             long serviceTimeNanos = System.nanoTime()-start;
-            predictor.updateMetrices2(FBUtilities.getBroadcastAddressAndPort(), latencyNanos, serviceTimeNanos,message.verb().toString());
+          //  Predictor.updateMetricesRemote(FBUtilities.getBroadcastAddressAndPort(), latencyNanos, message.verb().toString());
+            Predictor.updateMetrices2(FBUtilities.getBroadcastAddressAndPort(), latencyNanos, serviceTimeNanos,message.verb().toString());
 	                      
         if (callbackInfo.callback.supportsBackPressure())
         {

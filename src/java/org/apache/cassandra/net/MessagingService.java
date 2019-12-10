@@ -276,15 +276,17 @@ public final class MessagingService extends MessagingServiceMBeanImpl
 
     public void sendWithCallback(Message message, InetAddressAndPort to, RequestCallback cb, ConnectionType specifyConnection)
     {
+    	//cassandraproject
     	if(message.verb().equals(Verb.READ_REQ))
         {
-        	if(!predictor.containsKey(to))
+        	if(!Predictor.containsKey(to))
         	{
-        		predictor.put(to, new AtomicInteger(0));
+        		Predictor.putqueue(to, new AtomicInteger(0));
         	}
-        	predictor.get(to).incrementAndGet();
+        	Predictor.getqueue(to).incrementAndGet();
            	logger.info("incrementing job inside messagingservice");
         }
+    	//endcassandraproject
         callbacks.addWithExpiration(cb, message, to);
         updateBackPressureOnSend(to, cb, message);
         if (cb.invokeOnFailure() && !message.callBackOnFailure())
@@ -351,9 +353,11 @@ public final class MessagingService extends MessagingServiceMBeanImpl
             {
                 if (isShuttingDown)
                 {
-                	predictor.get(to).decrementAndGet();
+                	//cassandraproject
+                	Predictor.getqueue(to).decrementAndGet();
                 	logger.info("decrementing pending job inside messagingservice");
-                    return; // just drop the message, and let others clean up
+                   //endcassandraproject
+                	return; // just drop the message, and let others clean up
                 }
                 // remove the connection and try again
                 channelManagers.remove(to, connections);

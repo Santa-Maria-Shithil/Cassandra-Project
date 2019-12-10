@@ -28,15 +28,20 @@ import org.apache.cassandra.locator.Replica;
 import org.apache.cassandra.net.IVerbHandler;
 import org.apache.cassandra.net.Message;
 import org.apache.cassandra.net.MessagingService;
+import org.apache.cassandra.predictor.Predictor;
 import org.apache.cassandra.service.StorageService;
 import org.apache.cassandra.tracing.Tracing;
+import org.apache.cassandra.utils.FBUtilities;
 
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ReadCommandVerbHandler implements IVerbHandler<ReadCommand>
 {
     public static final ReadCommandVerbHandler instance = new ReadCommandVerbHandler();
 
+    //public Predictor predictor =new Predictor();
     private static final Logger logger = LoggerFactory.getLogger(ReadCommandVerbHandler.class);
 
     public void doVerb(Message<ReadCommand> message)
@@ -45,6 +50,11 @@ public class ReadCommandVerbHandler implements IVerbHandler<ReadCommand>
         {
             throw new RuntimeException("Cannot service reads while bootstrapping!");
         }
+        //cassandraproject
+        AtomicInteger counter = Predictor.getPendingRequestCounter(FBUtilities.getBroadcastAddressAndPort());
+        counter.incrementAndGet();
+        long start = System.nanoTime();
+        //endcassandraproject
 
         ReadCommand command = message.payload;
         validateTransientStatus(message);
@@ -70,6 +80,16 @@ public class ReadCommandVerbHandler implements IVerbHandler<ReadCommand>
         }
 
         Tracing.trace("Enqueuing response to {}", message.from());
+       
+        //cassandraproject
+        long serviceTimeInNanos = System.nanoTime() - start;
+        int queueSize = counter.decrementAndGet();
+       	//Predictor.getqueue2(FBUtilities.getBroadcastAddressAndPort()).decrementAndGet();
+        Predictor.PUTqueue2(FBUtilities.getBroadcastAddressAndPort(),new AtomicInteger(queueSize) );
+        Predictor.putservicetime(FBUtilities.getBroadcastAddressAndPort(), serviceTimeInNanos);
+        //endcassandraproject
+        
+        
         Message<ReadResponse> reply = message.responseWith(response);
         MessagingService.instance().send(reply, message.from());
     }

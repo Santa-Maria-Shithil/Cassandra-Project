@@ -13,11 +13,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Predictor {
-	private final ConcurrentHashMap<InetAddressAndPort,AtomicInteger> queuesize =new ConcurrentHashMap<>();
-	private final HashMap<InetAddressAndPort,Long> servicetime = new HashMap<>();
-	private final HashMap<InetAddressAndPort,Long> latency=new HashMap<>();
+	private static final ConcurrentHashMap<InetAddressAndPort,AtomicInteger> queuesize =new ConcurrentHashMap<>();
+	private static final HashMap<InetAddressAndPort,Long> servicetime = new HashMap<>();
+	private static final HashMap<InetAddressAndPort,Long> latency=new HashMap<>();
+	private static final ConcurrentHashMap<InetAddressAndPort,AtomicInteger> queuesize2 =new ConcurrentHashMap<>();
 	private static final Logger logger=LoggerFactory.getLogger(Predictor.class);
-	public boolean containsKey(InetAddressAndPort key)
+	public static boolean containsKey(InetAddressAndPort key)
 	{
 		if(queuesize.containsKey(key))
 		{
@@ -26,15 +27,27 @@ public class Predictor {
 		else 
 			return false;
 	}
-	 public AtomicInteger put(InetAddressAndPort key, AtomicInteger value)
+	 public static AtomicInteger putqueue(InetAddressAndPort key, AtomicInteger value)
 	 {
 		 return queuesize.put(key, value);
 	 }
-	 public AtomicInteger get(InetAddressAndPort key)
+	 public static AtomicInteger PUTqueue2(InetAddressAndPort key,AtomicInteger value)
+	 {
+		 return queuesize2.put(key, value);
+	 }
+	 public static AtomicInteger getqueue(InetAddressAndPort key)
 	 {
 		 return queuesize.get(key);
 	 }
-	public AtomicInteger getPendingRequestCounter(InetAddressAndPort key)
+	 public static Long putservicetime(InetAddressAndPort key, long value)
+	 {
+		 return servicetime.put(key, value);
+	 }
+	 public static Long getservicetime(InetAddressAndPort key)
+	 {
+		 return servicetime.get(key);
+	 }
+	public static AtomicInteger getPendingRequestCounter(InetAddressAndPort key)
 	{
 		AtomicInteger counter = queuesize.get(key);
 		if(counter==null)
@@ -44,14 +57,14 @@ public class Predictor {
 		}
 		return counter;
 	}
-	public void updateMetrices(InetAddressAndPort key,int qsize, long l, long stime, String tag)
+	public static void updateMetrices(InetAddressAndPort key,int qsize, long l, long stime, String tag)
 	{
 		
-		latency.put(key, l);
-		servicetime.put(key, stime);
+		//latency.put(key, l);
+		//servicetime.put(key, stime);
 		//int qsize=get(key).decrementAndGet();
-	   	logger.info("decrementing pending job inside predictor");
-		String data = key.toString() + " " + Integer.toString(qsize) + " " +l + " " + stime+" "+tag+"\n";
+	   //	logger.info("decrementing pending job inside predictor");
+		String data = key.toString() + " " + Integer.toString(qsize) + " " +l + " " + stime+" "+"UPDATELOCAL"+"\n";
 		File file =new File("data.txt");
 		FileWriter fr = null;
 		try
@@ -71,14 +84,42 @@ public class Predictor {
 			}
 		}
 	} 
-	
-	public void updateMetrices2(InetAddressAndPort key, long l, long stime, String tag)
+	public static void updateMetricesRemote(InetAddressAndPort key, long l,String tag)
 	{
 		
-		latency.put(key, l);
-		servicetime.put(key, stime);
+		//latency.put(key, l);
+		long stime=servicetime.get(key);
+		queuesize.get(key).decrementAndGet();
+		int qsize=queuesize2.get(key).get();
+	   //	logger.info("decrementing pending job inside predictor");
+		String data = key.toString() + " " + Integer.toString(qsize) + " " +l + " " + stime+" "+"UPDATEREMOTE"+"\n";
+		File file =new File("data.txt");
+		FileWriter fr = null;
+		try
+		{
+			fr = new FileWriter(file,true);
+			fr.write(data);
+		}catch (IOException e)
+		{
+			e.printStackTrace();
+		}finally {
+			try
+			{
+				fr.close();
+			}catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public static void updateMetrices2(InetAddressAndPort key, long l, long stime, String tag)
+	{
+		
+		//latency.put(key, l);
+		//servicetime.put(key, stime);
 		//int qsize=get(key).decrementAndGet();
-	   	logger.info("decrementing pending job inside predictor");
+	   //	logger.info("decrementing pending job inside predictor");
 		String data = key.toString() + " "+l + " " + stime+" "+tag+"\n";
 		File file =new File("datatwo.txt");
 		FileWriter fr = null;
