@@ -1798,7 +1798,11 @@ public class StorageProxy implements StorageProxyMBean
                 MessagingService.instance().latencySubscribers.add(FBUtilities.getBroadcastAddressAndPort(), MonotonicClock.approxTime.now() - approxCreationTimeNanos, NANOSECONDS);
                 //cassandraproject
                 long serviceTimeInNanos=System.nanoTime()-start;
-                int qsz=Predictor.getPendingRequestCounter(FBUtilities.getBroadcastAddressAndPort()).decrementAndGet();
+                int qsz;
+                if(Predictor.getPendingRequestCounter(FBUtilities.getBroadcastAddressAndPort()).get()<=0)
+                	qsz=0;
+                else
+                	qsz=Predictor.getPendingRequestCounter(FBUtilities.getBroadcastAddressAndPort()).decrementAndGet();
                
                 Predictor.updateMetrices(FBUtilities.getBroadcastAddressAndPort(), qsz, MonotonicClock.approxTime.now() - approxCreationTimeNanos, serviceTimeInNanos,"from storage proxy");
                 //endcassandraproject

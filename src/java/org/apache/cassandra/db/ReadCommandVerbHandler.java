@@ -83,7 +83,11 @@ public class ReadCommandVerbHandler implements IVerbHandler<ReadCommand>
        
         //cassandraproject
         long serviceTimeInNanos = System.nanoTime() - start;
-        int queueSize = counter.decrementAndGet();
+        int queueSize;
+        if(counter.get()<=0)
+        	queueSize=0;
+        else
+        	queueSize = counter.decrementAndGet();
        	//Predictor.getqueue2(FBUtilities.getBroadcastAddressAndPort()).decrementAndGet();
         Predictor.PUTqueue2(FBUtilities.getBroadcastAddressAndPort(),new AtomicInteger(queueSize) );
         Predictor.putservicetime(FBUtilities.getBroadcastAddressAndPort(), serviceTimeInNanos);
