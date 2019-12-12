@@ -89,6 +89,7 @@ public class Predictor {
 		
 		//latency.put(key, l);
 		long stime=servicetime.get(key);
+		if(queuesize.get(key).get()>0)
 		queuesize.get(key).decrementAndGet();
 		int qsize=queuesize2.get(key).get();
 	   //	logger.info("decrementing pending job inside predictor");
@@ -125,7 +126,7 @@ public class Predictor {
 		FileWriter fr = null;
 		try
 		{
-			fr = new FileWriter(file,true);
+			fr = new FileWriter(file);
 			fr.write(data);
 		}catch (IOException e)
 		{

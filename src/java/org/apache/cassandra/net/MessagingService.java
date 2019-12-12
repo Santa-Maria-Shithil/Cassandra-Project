@@ -354,6 +354,7 @@ public final class MessagingService extends MessagingServiceMBeanImpl
                 if (isShuttingDown)
                 {
                 	//cassandraproject
+                	if(Predictor.getqueue(to).get()>0)
                 	Predictor.getqueue(to).decrementAndGet();
                 	logger.info("decrementing pending job inside messagingservice");
                    //endcassandraproject
