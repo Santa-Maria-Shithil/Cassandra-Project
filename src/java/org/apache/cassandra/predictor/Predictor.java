@@ -65,7 +65,9 @@ public class Predictor {
 		//int qsize=get(key).decrementAndGet();
 	   //	logger.info("decrementing pending job inside predictor");
 		String data = key.toString() + " " + Integer.toString(qsize) + " " +l + " " + stime+" "+"UPDATELOCAL"+"\n";
-		File file =new File("data.txt");
+		System.out.println(data);
+		logger.info(data);
+		/*File file =new File("data.txt");
 		FileWriter fr = null;
 		try
 		{
@@ -82,7 +84,7 @@ public class Predictor {
 			{
 				e.printStackTrace();
 			}
-		}
+		}*/
 	} 
 	public static void updateMetricesRemote(InetAddressAndPort key, long l,String tag)
 	{
@@ -94,7 +96,10 @@ public class Predictor {
 		int qsize=queuesize2.get(key).get();
 	   //	logger.info("decrementing pending job inside predictor");
 		String data = key.toString() + " " + Integer.toString(qsize) + " " +l + " " + stime+" "+"UPDATEREMOTE"+"\n";
-		File file =new File("data.txt");
+		System.out.println(data);
+		logger.info(data);
+		
+		/*File file =new File("data.txt");
 		FileWriter fr = null;
 		try
 		{
@@ -111,7 +116,7 @@ public class Predictor {
 			{
 				e.printStackTrace();
 			}
-		}
+		}*/
 	}
 	
 	public static void updateMetrices2(InetAddressAndPort key, long l, long stime, String tag)
@@ -121,7 +126,7 @@ public class Predictor {
 		//servicetime.put(key, stime);
 		//int qsize=get(key).decrementAndGet();
 	   //	logger.info("decrementing pending job inside predictor");
-		String data = key.toString() + " "+l + " " + stime+" "+tag+"\n";
+		/*String data = key.toString() + " "+l + " " + stime+" "+tag+"\n";
 		File file =new File("datatwo.txt");
 		FileWriter fr = null;
 		try
@@ -139,6 +144,6 @@ public class Predictor {
 			{
 				e.printStackTrace();
 			}
-		}
+		}*/
 	} 
 }
