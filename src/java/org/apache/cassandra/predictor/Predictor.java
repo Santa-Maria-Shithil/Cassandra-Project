@@ -65,7 +65,7 @@ public class Predictor {
 		//int qsize=get(key).decrementAndGet();
 	   //	logger.info("decrementing pending job inside predictor");
 		String data = key.toString() + " " + Integer.toString(qsize) + " " +l + " " + stime+" "+"UPDATELOCAL"+"\n";
-		System.out.println(data);
+		//System.out.println(data);
 		logger.info(data);
 		/*File file =new File("data.txt");
 		FileWriter fr = null;
@@ -96,7 +96,7 @@ public class Predictor {
 		int qsize=queuesize2.get(key).get();
 	   //	logger.info("decrementing pending job inside predictor");
 		String data = key.toString() + " " + Integer.toString(qsize) + " " +l + " " + stime+" "+"UPDATEREMOTE"+"\n";
-		System.out.println(data);
+		//System.out.println(data);
 		logger.info(data);
 		
 		/*File file =new File("data.txt");
