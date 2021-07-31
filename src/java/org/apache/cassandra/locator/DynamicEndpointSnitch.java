@@ -90,7 +90,7 @@ public class DynamicEndpointSnitch extends AbstractEndpointSnitch implements Lat
         {
             public void run()
             {
-                updateScores();
+        //        updateScores();
             }
         };
         reset = new Runnable()
@@ -99,7 +99,7 @@ public class DynamicEndpointSnitch extends AbstractEndpointSnitch implements Lat
             {
                 // we do this so that a host considered bad has a chance to recover, otherwise would we never try
                 // to read from it, which would cause its score to never change
-                reset();
+        //        reset();
             }
         };
 
