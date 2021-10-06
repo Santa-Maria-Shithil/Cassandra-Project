@@ -371,7 +371,7 @@ public class DynamicEndpointSnitch extends AbstractEndpointSnitch implements Lat
         Gossiper.instance.addLocalApplicationState(ApplicationState.SEVERITY, StorageService.instance.valueFactory.severity(severity));
     }
 
-    public static double getSeverity(InetAddressAndPort endpoint)
+    private double getSeverity(InetAddressAndPort endpoint)
     {
         EndpointState state = Gossiper.instance.getEndpointStateForEndpoint(endpoint);
         if (state == null)
