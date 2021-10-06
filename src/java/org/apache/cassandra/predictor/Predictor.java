@@ -68,7 +68,7 @@ public class Predictor {
 	   //	logger.info("decrementing pending job inside predictor");
 		String data = key.toString() + " " + Integer.toString(qsize) + " " +l + " " + stime+" "+DynamicEndpointSnitch.getSeverity(key)+" "+"UPDATELOCAL"+"\n";
 		//System.out.println(data);
-		logger.info(data);
+	//	logger.info(data);
 		/*File file =new File("data.txt");
 		FileWriter fr = null;
 		try
@@ -99,7 +99,7 @@ public class Predictor {
 	   //	logger.info("decrementing pending job inside predictor");
 		String data = key.toString() + " " + Integer.toString(qsize) + " " +l + " " + stime+" "+DynamicEndpointSnitch.getSeverity(key)+" "+"UPDATEREMOTE"+"\n";
 		//System.out.println(data);
-		logger.info(data);
+		//logger.info(data);
 		
 		/*File file =new File("data.txt");
 		FileWriter fr = null;
