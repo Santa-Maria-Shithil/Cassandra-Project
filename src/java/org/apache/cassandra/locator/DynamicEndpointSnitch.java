@@ -90,7 +90,7 @@ public class DynamicEndpointSnitch extends AbstractEndpointSnitch implements Lat
         {
             public void run()
             {
-        //        updateScores();
+                updateScores();
             }
         };
         reset = new Runnable()
@@ -99,7 +99,7 @@ public class DynamicEndpointSnitch extends AbstractEndpointSnitch implements Lat
             {
                 // we do this so that a host considered bad has a chance to recover, otherwise would we never try
                 // to read from it, which would cause its score to never change
-        //        reset();
+                reset();
             }
         };
 
@@ -296,9 +296,10 @@ public class DynamicEndpointSnitch extends AbstractEndpointSnitch implements Lat
         for (Map.Entry<InetAddressAndPort, Snapshot> entry : snapshots.entrySet())
         {
             double mean = entry.getValue().getMedian();
+            logger.info(entry.getKey().toString()+"latency: "+Double.toString(mean)+"severity: "+Double.toString(getSeverity(entry.getKey())));
             if (mean > maxLatency)
             {
-                logger.info(entry.getKey().toString()+"maxlatency:"+Double.toString(maxLatency));
+               // logger.info(entry.getKey().toString()+"maxlatency: "+Double.toString(maxLatency)+"severity: "+getSeverity(entry.getKey()));
                 maxLatency = mean;
             }
     
@@ -316,7 +317,7 @@ public class DynamicEndpointSnitch extends AbstractEndpointSnitch implements Lat
             newScores.put(entry.getKey(), score);
         }
         scores = newScores;
-       // logger.info("inside dmax score");
+        //logger.info("DS"+getSeverity(entry.getKey()));
     }
 
     private void reset()
