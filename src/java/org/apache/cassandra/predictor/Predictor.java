@@ -64,7 +64,7 @@ public class Predictor {
 		//servicetime.put(key, stime);
 		//int qsize=get(key).decrementAndGet();
 	   //	logger.info("decrementing pending job inside predictor");
-		String data = key.toString() + " " + Integer.toString(qsize) + " " +l + " " + stime+" "+"UPDATELOCAL"+"\n";
+		String data = key.toString() + " " + Integer.toString(qsize) + " " +l + " " + stime+" "+DynamicEndpointSnitch.getSeverity(key)+" "+"UPDATELOCAL"+"\n";
 		//System.out.println(data);
 		logger.info(data);
 		/*File file =new File("data.txt");
@@ -95,7 +95,7 @@ public class Predictor {
 		queuesize.get(key).decrementAndGet();
 		int qsize=queuesize2.get(key).get();
 	   //	logger.info("decrementing pending job inside predictor");
-		String data = key.toString() + " " + Integer.toString(qsize) + " " +l + " " + stime+" "+"UPDATEREMOTE"+"\n";
+		String data = key.toString() + " " + Integer.toString(qsize) + " " +l + " " + stime+" "+DynamicEndpointSnitch.getSeverity(key)+" "+"UPDATEREMOTE"+"\n";
 		//System.out.println(data);
 		logger.info(data);
 		

@@ -299,7 +299,7 @@ public class DynamicEndpointSnitch extends AbstractEndpointSnitch implements Lat
             logger.info(entry.getKey().toString()+"latency: "+Double.toString(mean)+"severity: "+Double.toString(getSeverity(entry.getKey())));
             if (mean > maxLatency)
             {
-               // logger.info(entry.getKey().toString()+"maxlatency: "+Double.toString(maxLatency)+"severity: "+getSeverity(entry.getKey()));
+                logger.info(entry.getKey().toString()+"maxlatency: "+Double.toString(maxLatency)+"severity: "+getSeverity(entry.getKey()));
                 maxLatency = mean;
             }
     
@@ -371,7 +371,7 @@ public class DynamicEndpointSnitch extends AbstractEndpointSnitch implements Lat
         Gossiper.instance.addLocalApplicationState(ApplicationState.SEVERITY, StorageService.instance.valueFactory.severity(severity));
     }
 
-    private double getSeverity(InetAddressAndPort endpoint)
+    public static double getSeverity(InetAddressAndPort endpoint)
     {
         EndpointState state = Gossiper.instance.getEndpointStateForEndpoint(endpoint);
         if (state == null)
