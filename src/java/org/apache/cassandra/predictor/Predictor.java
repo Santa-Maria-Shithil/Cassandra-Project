@@ -9,6 +9,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.cassandra.locator.InetAddressAndPort;
 import org.apache.cassandra.service.CassandraDaemon;
+import org.apache.cassandra.locator.DynamicEndpointSnitch;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
