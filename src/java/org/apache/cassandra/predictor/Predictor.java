@@ -20,9 +20,9 @@ public class Predictor {
 	private static final ConcurrentHashMap<InetAddressAndPort,AtomicInteger> queuesize =new ConcurrentHashMap<>();
 	private static final HashMap<InetAddressAndPort,Long> servicetime = new HashMap<>();
 	private static final HashMap<InetAddressAndPort,Long> latency=new HashMap<>();
-	public static final ConcurrentHashMap<InetAddressAndPort,Double> queuesizeEMA =new ConcurrentHashMap<>();
-	public static final HashMap<InetAddressAndPort,Double> servicetimeEMA = new HashMap<>();
-	public static final HashMap<InetAddressAndPort,Double> latencyEMA=new HashMap<>();
+	public static final ConcurrentHashMap<InetAddressAndPort,Long> queuesizeEMA =new ConcurrentHashMap<>();
+	public static final HashMap<InetAddressAndPort,Long> servicetimeEMA = new HashMap<>();
+	public static final HashMap<InetAddressAndPort,Long> latencyEMA=new HashMap<>();
 	private static final ConcurrentHashMap<InetAddressAndPort,AtomicInteger> queuesize2 =new ConcurrentHashMap<>();
 	private static final Logger logger=LoggerFactory.getLogger(Predictor.class);
 	public static boolean containsKey(InetAddressAndPort key)
