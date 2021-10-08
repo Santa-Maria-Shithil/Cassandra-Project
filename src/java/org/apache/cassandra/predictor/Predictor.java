@@ -7,17 +7,22 @@ import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.cassandra.locator.DynamicEndpointSnitch;
 import org.apache.cassandra.locator.InetAddressAndPort;
 import org.apache.cassandra.service.CassandraDaemon;
-import org.apache.cassandra.locator.DynamicEndpointSnitch;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Predictor {
+
+//	static DynamicEndpointSnitch de =new DynamicEndpointSnitch();
+	 private static final double ALPHA = 0.9;
 	private static final ConcurrentHashMap<InetAddressAndPort,AtomicInteger> queuesize =new ConcurrentHashMap<>();
 	private static final HashMap<InetAddressAndPort,Long> servicetime = new HashMap<>();
 	private static final HashMap<InetAddressAndPort,Long> latency=new HashMap<>();
+	public static final ConcurrentHashMap<InetAddressAndPort,Double> queuesizeEMA =new ConcurrentHashMap<>();
+	public static final HashMap<InetAddressAndPort,Double> servicetimeEMA = new HashMap<>();
+	public static final HashMap<InetAddressAndPort,Double> latencyEMA=new HashMap<>();
 	private static final ConcurrentHashMap<InetAddressAndPort,AtomicInteger> queuesize2 =new ConcurrentHashMap<>();
 	private static final Logger logger=LoggerFactory.getLogger(Predictor.class);
 	public static boolean containsKey(InetAddressAndPort key)
@@ -61,14 +66,50 @@ public class Predictor {
 	}
 	public static void updateMetrices(InetAddressAndPort key,int qsize, long l, long stime, String tag)
 	{
-		
+		double lema,sema,qema;
 		//latency.put(key, l);
 		//servicetime.put(key, stime);
 		//int qsize=get(key).decrementAndGet();
 	   //	logger.info("decrementing pending job inside predictor");
-	//	String data = key.toString() + " " + Integer.toString(qsize) + " " +l + " " + stime+" "+DynamicEndpointSnitch.getSeverity(key)+" "+"UPDATELOCAL"+"\n";
-		//System.out.println(data);
-	//	logger.info(data);
+		//String data = key.toString() + " " + Integer.toString(qsize) + " " +l + " " + stime+" "+"UPDATELOCAL"+"\n";
+		l=l-stime;
+		if(latencyEMA.containsKey(key))
+		{
+			lema=(long) (ALPHA * (l/1000000) + (1 - ALPHA) * latencyEMA.get(key));
+			latencyEMA.put(key, lema);
+		}
+		else
+		{
+			lema=0;
+			latencyEMA.put(key, lema);
+		}
+		
+		if(queuesizeEMA.containsKey(key))
+		{
+			qema=(long) (ALPHA * qsize + (1 - ALPHA) * queuesizeEMA.get(key));
+			queuesizeEMA.put(key, qema);
+		}
+		else
+		{
+			qema=0;
+			queuesizeEMA.put(key, qema);
+		}
+		if(servicetimeEMA.containsKey(key))
+		{
+			sema=(long) (ALPHA * (stime/1000000) + (1 - ALPHA) * servicetimeEMA.get(key));
+			servicetimeEMA.put(key, sema);
+		}
+		else
+		{
+			sema=0;
+			servicetimeEMA.put(key,sema);
+		}
+		
+	//	DynamicEndpointSnitch.updateScores(lema,qema,sema,key);
+
+		String data = l + " " + stime + " " + Integer.toString(qsize) +" "+lema+" "+sema+" "+qema +"UPDATELOCAL"+"\n";
+		logger.info(data);
+		
 		/*File file =new File("data.txt");
 		FileWriter fr = null;
 		try
@@ -90,16 +131,55 @@ public class Predictor {
 	} 
 	public static void updateMetricesRemote(InetAddressAndPort key, long l,String tag)
 	{
-		
+		double lema,sema,qema;
 		//latency.put(key, l);
 		long stime=servicetime.get(key);
+		l=l-stime;
 		if(queuesize.get(key).get()>0)
 		queuesize.get(key).decrementAndGet();
 		int qsize=queuesize2.get(key).get();
 	   //	logger.info("decrementing pending job inside predictor");
-		//String data = key.toString() + " " + Integer.toString(qsize) + " " +l + " " + stime+" "+DynamicEndpointSnitch.getSeverity(key)+" "+"UPDATEREMOTE"+"\n";
-		//System.out.println(data);
+		//String data = key.toString() + " " + Integer.toString(qsize) + " " +l + " " + stime+" "+"UPDATEREMOTE"+"\n";
+		//String data = key.toString() + " " +l + " " + stime + " " + Integer.toString(qsize) +" "+DynamicEndpointSnitch.getSeverity(key)+" "+ "UPDATEREMOTE"+"\n";
 		//logger.info(data);
+		l=l-stime;
+		if(latencyEMA.containsKey(key))
+		{
+			lema=(long) (ALPHA * (l/1000000) + (1 - ALPHA) * latencyEMA.get(key));
+			latencyEMA.put(key, lema);
+		}
+		else
+		{
+			lema=0;
+			latencyEMA.put(key, lema);
+		}
+		
+		if(queuesizeEMA.containsKey(key))
+		{
+			qema=(long) (ALPHA * qsize + (1 - ALPHA) * queuesizeEMA.get(key));
+			queuesizeEMA.put(key, qema);
+		}
+		else
+		{
+			qema=0;
+			queuesizeEMA.put(key, qema);
+		}
+		if(servicetimeEMA.containsKey(key))
+		{
+			sema=(long) (ALPHA * (stime/1000000) + (1 - ALPHA) * servicetimeEMA.get(key));
+			servicetimeEMA.put(key, sema);
+		}
+		else
+		{
+			sema=0;
+			servicetimeEMA.put(key,sema);
+		}
+		
+	//	DynamicEndpointSnitch.updateScores(lema,qema,sema,key);
+		
+		
+			String data = l + " " + stime + " " + Integer.toString(qsize) +" "+lema+" "+sema+" "+qema +"UPDATEREMOTE"+"\n";
+		logger.info(data);
 		
 		/*File file =new File("data.txt");
 		FileWriter fr = null;
@@ -121,14 +201,14 @@ public class Predictor {
 		}*/
 	}
 	
-	public static void updateMetrices2(InetAddressAndPort key, long l, long stime, String tag)
+public static void updateMetrices2(InetAddressAndPort key, long l, long stime, String tag)
 	{
 		
 		//latency.put(key, l);
 		//servicetime.put(key, stime);
 		//int qsize=get(key).decrementAndGet();
 	   //	logger.info("decrementing pending job inside predictor");
-		/*String data = key.toString() + " "+l + " " + stime+" "+tag+"\n";
+	/*	String data = key.toString() + " "+l + " " + stime+" "+tag+"\n";
 		File file =new File("datatwo.txt");
 		FileWriter fr = null;
 		try
