@@ -72,7 +72,7 @@ public class Predictor {
 		//int qsize=get(key).decrementAndGet();
 	   //	logger.info("decrementing pending job inside predictor");
 		//String data = key.toString() + " " + Integer.toString(qsize) + " " +l + " " + stime+" "+"UPDATELOCAL"+"\n";
-		l=l-stime;
+	//	l=l-stime;
 		if(latencyEMA.containsKey(key))
 		{
 			lema=(long) (ALPHA * l + (1 - ALPHA) * latencyEMA.get(key));
@@ -134,7 +134,7 @@ public class Predictor {
 		double lema,sema,qema;
 		//latency.put(key, l);
 		long stime=servicetime.get(key);
-		l=l-stime;
+	//	l=l-stime;
 		if(queuesize.get(key).get()>0)
 		queuesize.get(key).decrementAndGet();
 		int qsize=queuesize2.get(key).get();
