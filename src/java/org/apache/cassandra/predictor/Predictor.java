@@ -66,7 +66,7 @@ public class Predictor {
 	}
 	public static void updateMetrices(InetAddressAndPort key,int qsize, long l, long stime, String tag)
 	{
-		double lema,sema,qema;
+		long lema,sema,qema;
 		//latency.put(key, l);
 		//servicetime.put(key, stime);
 		//int qsize=get(key).decrementAndGet();
@@ -131,7 +131,7 @@ public class Predictor {
 	} 
 	public static void updateMetricesRemote(InetAddressAndPort key, long l,String tag)
 	{
-		double lema,sema,qema;
+		long lema,sema,qema;
 		//latency.put(key, l);
 		long stime=servicetime.get(key);
 	//	l=l-stime;
