@@ -107,7 +107,7 @@ public class Predictor {
 		
 	//	DynamicEndpointSnitch.updateScores(lema,qema,sema,key);
 
-		String data = l + " " + stime + " " + Integer.toString(qsize) +" "+lema+" "+sema+" "+qema +"UPDATELOCAL"+"\n";
+		String data = l + " " + stime + " " + Integer.toString(qsize) +" "+lema+" "+sema+" "+qema +" UPDATELOCAL"+"\n";
 		logger.info(data);
 		
 		/*File file =new File("data.txt");
@@ -178,7 +178,7 @@ public class Predictor {
 	//	DynamicEndpointSnitch.updateScores(lema,qema,sema,key);
 		
 		
-			String data = l + " " + stime + " " + Integer.toString(qsize) +" "+lema+" "+sema+" "+qema +"UPDATEREMOTE"+"\n";
+			String data = l + " " + stime + " " + Integer.toString(qsize) +" "+lema+" "+sema+" "+qema +" UPDATEREMOTE"+"\n";
 		logger.info(data);
 		
 		/*File file =new File("data.txt");
