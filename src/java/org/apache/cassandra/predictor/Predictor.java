@@ -75,7 +75,7 @@ public class Predictor {
 		l=l-stime;
 		if(latencyEMA.containsKey(key))
 		{
-			lema=(long) (ALPHA * (l/1000000) + (1 - ALPHA) * latencyEMA.get(key));
+			lema=(long) (ALPHA * l + (1 - ALPHA) * latencyEMA.get(key));
 			latencyEMA.put(key, lema);
 		}
 		else
@@ -96,7 +96,7 @@ public class Predictor {
 		}
 		if(servicetimeEMA.containsKey(key))
 		{
-			sema=(long) (ALPHA * (stime/1000000) + (1 - ALPHA) * servicetimeEMA.get(key));
+			sema=(long) (ALPHA * (stime) + (1 - ALPHA) * servicetimeEMA.get(key));
 			servicetimeEMA.put(key, sema);
 		}
 		else
@@ -145,7 +145,7 @@ public class Predictor {
 		l=l-stime;
 		if(latencyEMA.containsKey(key))
 		{
-			lema=(long) (ALPHA * (l/1000000) + (1 - ALPHA) * latencyEMA.get(key));
+			lema=(long) (ALPHA * (l) + (1 - ALPHA) * latencyEMA.get(key));
 			latencyEMA.put(key, lema);
 		}
 		else
@@ -166,7 +166,7 @@ public class Predictor {
 		}
 		if(servicetimeEMA.containsKey(key))
 		{
-			sema=(long) (ALPHA * (stime/1000000) + (1 - ALPHA) * servicetimeEMA.get(key));
+			sema=(long) (ALPHA * (stime) + (1 - ALPHA) * servicetimeEMA.get(key));
 			servicetimeEMA.put(key, sema);
 		}
 		else
