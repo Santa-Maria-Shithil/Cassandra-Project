@@ -436,7 +436,7 @@ seed_provider:
       parameters:
           # seeds is actually a comma-delimited list of addresses.
           # Ex: "<ip1>,<ip2>,<ip3>"
-          - seeds: "4.227.140.201,52.91.72.231,54.236.201.101" #public ip
+          - seeds: "4.227.140.201, 52.91.72.231" #public ip
 
 # For workloads with more data than can fit in memory, Cassandra's
 # bottleneck will be reads that need to fetch data from
