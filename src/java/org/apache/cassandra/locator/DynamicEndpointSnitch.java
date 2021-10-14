@@ -311,8 +311,8 @@ public class DynamicEndpointSnitch extends AbstractEndpointSnitch implements Lat
             double score = entry.getValue().getMedian() / maxLatency;
             // finally, add the severity without any weighting, since hosts scale this relative to their own load and the size of the task causing the severity.
             // "Severity" is basically a measure of compaction activity (CASSANDRA-3722).
-            if (USE_SEVERITY)
-                score += getSeverity(entry.getKey());
+            //if (USE_SEVERITY)
+              //  score += getSeverity(entry.getKey());
             // lowest score (least amount of badness) wins.
             newScores.put(entry.getKey(), score);
         }
